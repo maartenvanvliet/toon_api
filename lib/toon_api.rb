@@ -45,6 +45,8 @@ class ToonApi
     })
 
     response = get("/toonMobileBackendWeb/client/auth/start", params)
+
+    JSON.parse(response.body)['success'] ==  true
   end
 
   def logout
@@ -64,9 +66,10 @@ class ToonApi
   def retrieve_toonstate
     return toonstate unless toonstate.empty?
 
-    self.toonstate = {}
-    response = get("/toonMobileBackendWeb/client/auth/retrieveToonState", client_params)
-    self.toonstate = JSON.parse(response.body)
+    self.toonstate ||= begin
+      response = get("/toonMobileBackendWeb/client/auth/retrieveToonState", client_params)
+      JSON.parse(response.body)
+    end
   end
 
   def refresh_toon_state
@@ -77,6 +80,31 @@ class ToonApi
   def get_thermostat_info
     retrieve_toonstate
     toonstate["thermostatInfo"]
+  end
+
+  def get_gas_usage
+    retrieve_toon_state
+    toonstate["gasUsage"]
+  end
+
+  def get_power_usage
+    retrieve_toon_state
+    toonstate["powerUsage"]
+  end
+
+  def get_thermostat_info
+    retrieve_toon_state
+    toonstate["thermostatInfo"]
+  end
+
+  def get_thermostat_states
+    retrieve_toon_state
+    toonstate["thermostatStates"]
+  end
+
+  def get_program_state
+    retrieve_toon_state
+    toonstate["thermostatInfo"]["activeState"]
   end
 
   private
