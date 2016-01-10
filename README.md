@@ -15,6 +15,9 @@ And then execute:
 
     $ bundle install
 
+Or install using
+
+  $ gem install toon_api
 
 ## Usage
 
