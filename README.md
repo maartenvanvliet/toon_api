@@ -1,4 +1,4 @@
-# ToonApi
+# ToonApi [![Build Status](https://travis-ci.org/maartenvanvliet/toon_api.svg?branch=master)](https://travis-ci.org/maartenvanvliet/toon_api)
 
 Ruby gem to interface with Eneco Toon intelligent thermostat. Port of https://github.com/rvdm/toon
 
