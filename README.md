@@ -1,6 +1,20 @@
-# ToonApi (WIP)
+# ToonApi
 
 Ruby gem to interface with Eneco Toon intelligent thermostat. Port of https://github.com/rvdm/toon
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'toon_api'
+
+```
+
+And then execute:
+
+    $ bundle install
+
 
 ## Usage
 
@@ -9,8 +23,11 @@ require 'toon_api'
 
 toon = ToonApi.new(username, password)
 toon.login
+toon.logout
 
 toon.get_thermostat_info
+toon.get_gas_usage
+toon.get_power_usage
 
 ```
 
