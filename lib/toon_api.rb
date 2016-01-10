@@ -2,17 +2,21 @@ require "toon_api/version"
 require 'json'
 require 'securerandom'
 class ToonApi
-  attr_accessor :username, :password, :session_data, :toonstate
+  attr_accessor :username, :password, :session_data, :toon_state, :http
   attr_reader :_last_response
 
   def initialize(username, password)
     self.username = username
     self.password = password
-    self.toonstate = {}
+    clear_toon_state
   end
 
   def base_url
     "https://toonopafstand.eneco.nl"
+  end
+
+  def clear_toon_state
+    self.toon_state = {}
   end
 
   def http
@@ -46,13 +50,15 @@ class ToonApi
 
     response = get("/toonMobileBackendWeb/client/auth/start", params)
 
-    JSON.parse(response.body)['success'] ==  true
+    successful_response?(response)
   end
 
   def logout
-    get("/toonMobileBackendWeb/client/auth/logout", client_params)
-    self.toonstate = nil
+    return unless session_data
+    response = get("/toonMobileBackendWeb/client/auth/logout", client_params)
+    clear_toon_state
     self.session_data = nil
+    successful_response?(response)
   end
 
   def client_params
@@ -63,51 +69,51 @@ class ToonApi
     }
   end
 
-  def retrieve_toonstate
-    return toonstate unless toonstate.empty?
+  def retrieve_toon_state
+    return unless session_data
+    return toon_state unless toon_state.empty?
 
-    self.toonstate ||= begin
-      response = get("/toonMobileBackendWeb/client/auth/retrieveToonState", client_params)
+    self.toon_state = begin
+      response = get("/toonMobileBackendWeb/client/auth/retrieveToon_State", client_params)
       JSON.parse(response.body)
     end
   end
 
   def refresh_toon_state
-    self.toonstate = nil
-    retrieve_toonstate
+    clear_toon_state
+    retrieve_toon_state
   end
 
   def get_thermostat_info
-    retrieve_toonstate
-    toonstate["thermostatInfo"]
+    retrieve_toon_state
+    toon_state["thermostatInfo"]
   end
 
   def get_gas_usage
     retrieve_toon_state
-    toonstate["gasUsage"]
+    toon_state["gasUsage"]
   end
 
   def get_power_usage
     retrieve_toon_state
-    toonstate["powerUsage"]
-  end
-
-  def get_thermostat_info
-    retrieve_toon_state
-    toonstate["thermostatInfo"]
+    toon_state["powerUsage"]
   end
 
   def get_thermostat_states
     retrieve_toon_state
-    toonstate["thermostatStates"]
+    toon_state["thermostatStates"]
   end
 
   def get_program_state
     retrieve_toon_state
-    toonstate["thermostatInfo"]["activeState"]
+    toon_state["thermostatInfo"]["activeState"]
   end
 
   private
+    def successful_response?(response)
+      JSON.parse(response.body)['success'] ==  true
+    end
+
     def perform(request)
       @_last_response = http.request(request)
     end
