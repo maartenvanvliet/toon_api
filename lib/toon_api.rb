@@ -2,6 +2,7 @@ require "toon_api/version"
 require 'json'
 require 'securerandom'
 require 'uri'
+require 'net/http'
 
 class ToonApi
   attr_accessor :username, :password, :session_data, :toon_state, :http
