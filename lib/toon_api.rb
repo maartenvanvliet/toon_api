@@ -74,7 +74,7 @@ class ToonApi
     return toon_state unless toon_state.empty?
 
     self.toon_state = begin
-      response = get("/toonMobileBackendWeb/client/auth/retrieveToon_State", client_params)
+      response = get("/toonMobileBackendWeb/client/auth/retrieveToonState", client_params)
       JSON.parse(response.body)
     end
   end
